@@ -1,0 +1,18 @@
+spring:
+  application:
+    name:user-center
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/hjc
+    username: root
+    password: 1776397883
+
+server:
+  port: 8080
+
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: false  # 关闭驼峰转下划线
+
+
