@@ -5,11 +5,13 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hjc.usercenter.mapper.UserMapper;
 import com.hjc.usercenter.model.domain.User;
 import com.hjc.usercenter.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.regex.Pattern;
 
 /**
@@ -20,15 +22,24 @@ import java.util.regex.Pattern;
 
 
 
+
 @Service
+@Slf4j
 public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     implements UserService{
 
     @Resource
     private UserMapper userMapper;
 
+    /**
+     * 用户登录态键
+     */
+    private static final String USER_LOGIN_STATUS = "userLoginStatus";
+
+
+    //注册
     @Override
-    public long userRegiser(String userAccount, String userPassword, String checkPassword) {
+    public long userRegister(String userAccount, String userPassword, String checkPassword) {
 
        //1.校验
         if(StringUtils.isAnyBlank(userAccount,userPassword,checkPassword)){
@@ -65,15 +76,71 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         //3.插入数据
         User user = new User();
         user.setUserAccount(userAccount);
-        user.setUserPasswword(encryptPassword);
+        user.setUserPassword(encryptPassword);
         //非null判断
         boolean saveResult = this.save(user);
-        if(saveResult){
+        if(!saveResult){
             return -1;
         }
 
         return user.getId();
     }
+
+    @Override
+    public User doLogin(String userAccount, String userPassword, HttpServletRequest request) {
+
+       //1.检验
+        if(StringUtils.isAnyBlank(userAccount,userPassword)){
+            return null;
+
+        }
+
+        if(userAccount.length()<4){
+            return null;
+        };
+
+        if(userPassword.length()<8){
+            return null;
+        };
+
+        boolean isValid =  Pattern.compile("^[\u4e00-\u9fa5a-zA-Z0-9]+$").matcher(userAccount).matches();
+        if (!isValid){
+            return null;
+        };
+
+        //2.校验密码
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("userAccount", userAccount);
+        queryWrapper.eq("userPassword", userPassword);
+        User user = userMapper.selectOne(queryWrapper);
+        if(user == null){
+            log.info("user login failed,userAccount cannot match password");
+            return null;
+        }
+
+        //3.返回前端信息脱敏
+        User user1 = new User();
+        user1.setUsername(user.getUsername());
+        user1.setUserAccount(user.getUserAccount());
+        user1.setAvatarUrl(user.getAvatarUrl());
+        user1.setGender(user.getGender());
+        user1.setPhone(user.getPhone());
+        user1.setEmail(user.getEmail());
+        user1.setUserStatus(user.getUserStatus());
+        user1.setCreateTime(user.getCreateTime());
+
+
+
+        //4.记录用户的登录态
+        request.getSession().setAttribute("USER_LOGIN_STATUS",user1);
+
+
+
+
+        return user1;
+    }
+
+
 }
 
 

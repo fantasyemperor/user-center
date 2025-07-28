@@ -1,7 +1,9 @@
 package com.hjc.usercenter.service;
 
-import com.hjc.usercenter.model.domain.User;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.hjc.usercenter.model.domain.User;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
 * @author 17763
@@ -18,6 +20,16 @@ public interface UserService extends IService<User> {
      * @param checkPassword 校验密码
      * @return
      */
-     long userRegiser(String userAccount,String userPassword,String checkPassword);
+     long userRegister(String userAccount, String userPassword, String checkPassword);
 
+
+    /**
+     * 登录
+     *
+     * @param username
+     * @param password
+     * @param request
+     * @return
+     */
+     User doLogin(String username,String password, HttpServletRequest request);
 }
