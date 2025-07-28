@@ -109,14 +109,32 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         };
 
         //2.校验密码
+
+//        String hashed = BCrypt.hashpw(userPassword, BCrypt.gensalt());
+
+//        String encryptPassword = BCrypt.hashpw(userPassword, BCrypt.gensalt());
+
+
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("userAccount", userAccount);
-        queryWrapper.eq("userPassword", userPassword);
+//        queryWrapper.eq("userPassword", encryptPassword);
+
+
         User user = userMapper.selectOne(queryWrapper);
-        if(user == null){
+
+        // Then verify the password
+        if (user == null || !BCrypt.checkpw(userPassword, user.getUserPassword())) {
             log.info("user login failed,userAccount cannot match password");
             return null;
         }
+//            // Authentication successful
+//        } else {
+//            // Authentication failed
+//        }
+//        if(user == null){
+//            log.info("user login failed,userAccount cannot match password");
+//            return null;
+//        }
 
         //3.返回前端信息脱敏
         User user1 = new User();
