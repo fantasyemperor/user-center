@@ -17,13 +17,13 @@ class UserServiceTest {
     @Test
     void TestAddUser() {
         User user = new User();
-        user.setUsername("hjc");
-        user.setUserAccount("111");
-        user.setAvatarUrl("https://pica.zhimg.com/v2-420d7455f5fa1b5fbca17790c8b5bc90_r.jpg");
+        user.setUsername("hjc22");
+        user.setUserAccount("11122");
+        user.setAvatarUrl("1123");
         user.setGender(0);
-        user.setUserPasswword("111");
-        user.setPhone("111");
-        user.setEmail("111");
+        user.setUserPasswword("1112");
+        user.setPhone("1112");
+        user.setEmail("1112");
 
         boolean result = userService.save(user);
 
@@ -34,4 +34,56 @@ class UserServiceTest {
 
     }
 
+
+
+    @Test
+    void userRegiser() {
+
+        String userAccount = "111333444";
+        String userPassword = "1776397883";
+        String checkPassword = "1776397883";
+
+        long result = userService.userRegiser(userAccount,userPassword,checkPassword);
+        System.out.println(result);
+        Assertions.assertTrue(result == -1);
+
+        userAccount = "11";
+        result = userService.userRegiser(userAccount,userPassword,checkPassword);
+        Assertions.assertTrue(result == -1);
+
+        userAccount = "222222";
+        userPassword = "1776";
+        result = userService.userRegiser(userAccount,userPassword,checkPassword);
+        Assertions.assertTrue(result == -1);
+
+        userAccount = "122222346";
+        userPassword = "1776397883";
+        checkPassword = "1776397883";
+        result = userService.userRegiser(userAccount,userPassword,checkPassword);
+        Assertions.assertTrue(result == -1);
+
+        userAccount = "3333333333";
+        userPassword = "1776397883";
+        checkPassword = "1776397882";
+        result = userService.userRegiser(userAccount,userPassword,checkPassword);
+        Assertions.assertTrue(result == -1);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    }
 }
