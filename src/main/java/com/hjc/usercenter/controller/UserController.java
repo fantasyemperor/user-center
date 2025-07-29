@@ -6,13 +6,14 @@ import com.hjc.usercenter.model.domain.request.UserLoginRequest;
 import com.hjc.usercenter.model.domain.request.UserRegisterRequest;
 import com.hjc.usercenter.service.UserService;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Collections;
+import java.util.List;
+
+import static com.hjc.usercenter.userConstants.UserConstants.USER_LOGIN_STATUS;
 
 @RestController
 @RequestMapping("/user")
@@ -21,6 +22,27 @@ public class UserController {
     @Resource
     private UserService userService;
 
+
+
+    /**
+     * 判断是否为管理员
+     * @param request
+     * @return
+     */
+    public boolean isAdmin(HttpServletRequest request){
+        Object user  = request.getSession().getAttribute(USER_LOGIN_STATUS);
+        User user1 = (User)user;
+        if(user1.getUserRole()<=0){
+            return false;
+        };
+        if(user1.getUserRole()>1){
+            return false;
+        }
+        return true;
+    }
+
+
+    //注册
     @PostMapping("/register")
     public Long userRegister(@RequestBody UserRegisterRequest userRegisterRequest) {
 
@@ -39,6 +61,8 @@ public class UserController {
         return userService.userRegister(userAccount, userPassword, checkPassword);
     }
 
+
+    //登录
     @PostMapping("/userLogin")
     public User userLogin(@RequestBody UserLoginRequest userLoginRequest, HttpServletRequest request) {
 
@@ -55,5 +79,36 @@ public class UserController {
         return userService.doLogin(userAccount, userPassword, request);
     }
 
+    //查询用户
+    @GetMapping("/search")
+    public List<User> findUserByName(String username, HttpServletRequest request) {
+
+        if(!StringUtils.isNotBlank(username)){
+            return Collections.emptyList();
+        }
+
+        if(!isAdmin(request)){
+            return Collections.emptyList();
+        }
+
+        return userService.findUserByName(username);
+    }
+
+    //删除用户
+    @PostMapping("/delete")
+    public boolean isDeleteUser(@RequestBody long userId, HttpServletRequest request) {
+        if(userId<=0){
+            return false;
+        }
+
+        if(!isAdmin(request)){
+            return false;
+        }
+
+        return userService.removeById(userId);
+
+
+
+    }
 
 }

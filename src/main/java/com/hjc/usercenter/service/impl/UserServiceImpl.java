@@ -12,13 +12,18 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+import static com.hjc.usercenter.userConstants.UserConstants.USER_LOGIN_STATUS;
 
 /**
 * @author 17763
 * @description 针对表【user(用户)】的数据库操作Service实现
 * @createDate 2025-07-27 04:14:57
 */
+
 
 
 
@@ -31,10 +36,27 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     @Resource
     private UserMapper userMapper;
 
+
     /**
-     * 用户登录态键
+     * 返回用户脱敏
+     * @param user
+     * @return
      */
-    private static final String USER_LOGIN_STATUS = "userLoginStatus";
+    public User userSafety(User user){
+        User user1 = new User();
+        user1.setUsername(user.getUsername());
+        user1.setUserAccount(user.getUserAccount());
+        user1.setAvatarUrl(user.getAvatarUrl());
+        user1.setGender(user.getGender());
+        user1.setPhone(user.getPhone());
+        user1.setEmail(user.getEmail());
+        user1.setUserStatus(user.getUserStatus());
+        user1.setCreateTime(user.getCreateTime());
+        user1.setUserRole(user.getUserRole());
+        return user1;
+    }
+
+
 
 
     //注册
@@ -137,25 +159,35 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 //        }
 
         //3.返回前端信息脱敏
-        User user1 = new User();
-        user1.setUsername(user.getUsername());
-        user1.setUserAccount(user.getUserAccount());
-        user1.setAvatarUrl(user.getAvatarUrl());
-        user1.setGender(user.getGender());
-        user1.setPhone(user.getPhone());
-        user1.setEmail(user.getEmail());
-        user1.setUserStatus(user.getUserStatus());
-        user1.setCreateTime(user.getCreateTime());
-
-
-
-        //4.记录用户的登录态
-        request.getSession().setAttribute("USER_LOGIN_STATUS",user1);
+        User user1 = userSafety(user);
+        //4.记录用户的登录态，返回脱敏的user
+        request.getSession().setAttribute(USER_LOGIN_STATUS,user1);
 
 
 
 
         return user1;
+    }
+
+
+
+    @Override
+    public List<User> findUserByName(String username) {
+
+
+
+
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.like("username", username);
+        List<User> userList = userMapper.selectList(queryWrapper);
+
+
+        List<User> safeUserList = userList.stream()
+                .map(this::userSafety)
+                .collect(Collectors.toList());
+
+        return safeUserList;
+
     }
 
 

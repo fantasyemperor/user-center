@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.hjc.usercenter.model.domain.User;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
 * @author 17763
@@ -32,4 +33,15 @@ public interface UserService extends IService<User> {
      * @return
      */
      User doLogin(String username,String password, HttpServletRequest request);
+
+
+
+    /**\
+     * 查询用户
+     * @param username
+     * @return
+     */
+    List<User> findUserByName(String username);
+
+
 }
