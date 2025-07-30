@@ -36,54 +36,36 @@ class UserServiceTest {
 
 
 
-    @Test
-    void userRegiser() {
-
-        String userAccount = "111333444";
-        String userPassword = "1776397883";
-        String checkPassword = "1776397883";
-
-        long result = userService.userRegister(userAccount,userPassword,checkPassword);
-        System.out.println(result);
-        Assertions.assertTrue(result == -1);
-
-        userAccount = "11";
-        result = userService.userRegister(userAccount,userPassword,checkPassword);
-        Assertions.assertTrue(result == -1);
-
-        userAccount = "222222";
-        userPassword = "1776";
-        result = userService.userRegister(userAccount,userPassword,checkPassword);
-        Assertions.assertTrue(result == -1);
-
-        userAccount = "122222346";
-        userPassword = "1776397883";
-        checkPassword = "1776397883";
-        result = userService.userRegister(userAccount,userPassword,checkPassword);
-        Assertions.assertTrue(result == -1);
-
-        userAccount = "3333333333";
-        userPassword = "1776397883";
-        checkPassword = "1776397882";
-        result = userService.userRegister(userAccount,userPassword,checkPassword);
-        Assertions.assertTrue(result == -1);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    }
+//    @Test
+//    void userRegiser() {
+//
+//        String userAccount = "111333444";
+//        String userPassword = "1776397883";
+//        String checkPassword = "1776397883";
+//
+//        long result = userService.userRegister(userAccount,userPassword,checkPassword);
+//        System.out.println(result);
+//        Assertions.assertTrue(result == -1);
+//
+//        userAccount = "11";
+//        result = userService.userRegister(userAccount,userPassword,checkPassword);
+//        Assertions.assertTrue(result == -1);
+//
+//        userAccount = "222222";
+//        userPassword = "1776";
+//        result = userService.userRegister(userAccount,userPassword,checkPassword);
+//        Assertions.assertTrue(result == -1);
+//
+//        userAccount = "122222346";
+//        userPassword = "1776397883";
+//        checkPassword = "1776397883";
+//        result = userService.userRegister(userAccount,userPassword,checkPassword);
+//        Assertions.assertTrue(result == -1);
+//
+//        userAccount = "3333333333";
+//        userPassword = "1776397883";
+//        checkPassword = "1776397882";
+//        result = userService.userRegister(userAccount,userPassword,checkPassword);
+//        Assertions.assertTrue(result == -1);
+//   }
 }

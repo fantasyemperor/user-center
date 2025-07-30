@@ -1,6 +1,8 @@
 package com.hjc.usercenter.controller;
 
 
+import com.hjc.usercenter.common.BasaResponse;
+import com.hjc.usercenter.common.ResultUtills;
 import com.hjc.usercenter.model.domain.User;
 import com.hjc.usercenter.model.domain.request.UserLoginRequest;
 import com.hjc.usercenter.model.domain.request.UserRegisterRequest;
@@ -10,8 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Collections;
-import java.util.List;
 
 import static com.hjc.usercenter.userConstants.UserConstants.USER_LOGIN_STATUS;
 
@@ -44,7 +44,7 @@ public class UserController {
 
     //注册
     @PostMapping("/register")
-    public Long userRegister(@RequestBody UserRegisterRequest userRegisterRequest) {
+    public BasaResponse userRegister(@RequestBody UserRegisterRequest userRegisterRequest) {
 
         if(userRegisterRequest==null){
             return null;
@@ -53,18 +53,19 @@ public class UserController {
         String userAccount = userRegisterRequest.getUserAccount();
         String userPassword = userRegisterRequest.getUserPassword();
         String checkPassword = userRegisterRequest.getCheckPassword();
+        String planetCode = userRegisterRequest.getPlanetCode();
 
         if(StringUtils.isAnyBlank(userAccount,userPassword,checkPassword)){
             return null;
         };
 
-        return userService.userRegister(userAccount, userPassword, checkPassword);
+        return ResultUtills.ok(userService.userRegister(userAccount, userPassword, checkPassword,planetCode));
     }
 
 
     //登录
     @PostMapping("/userLogin")
-    public User userLogin(@RequestBody UserLoginRequest userLoginRequest, HttpServletRequest request) {
+    public BasaResponse userLogin(@RequestBody UserLoginRequest userLoginRequest, HttpServletRequest request) {
 
         if(userLoginRequest==null){
             return null;
@@ -76,39 +77,49 @@ public class UserController {
             return null;
         };
 
-        return userService.doLogin(userAccount, userPassword, request);
+
+        return ResultUtills.ok(userService.doLogin(userAccount, userPassword, request));
     }
 
     //查询用户
     @GetMapping("/search")
-    public List<User> findUserByName(String username, HttpServletRequest request) {
+    public BasaResponse findUserByName(String username, HttpServletRequest request) {
 
         if(!StringUtils.isNotBlank(username)){
-            return Collections.emptyList();
+//            return Collections.emptyList();
+            return null;
         }
 
         if(!isAdmin(request)){
-            return Collections.emptyList();
+//            return Collections.emptyList();
+            return null;
         }
 
-        return userService.findUserByName(username);
+        return ResultUtills.ok(userService.findUserByName(username));
     }
 
     //删除用户
     @PostMapping("/delete")
-    public boolean isDeleteUser(@RequestBody long userId, HttpServletRequest request) {
+    public BasaResponse isDeleteUser(@RequestBody long userId, HttpServletRequest request) {
         if(userId<=0){
-            return false;
+//            return false;
+            return null;
         }
 
         if(!isAdmin(request)){
-            return false;
+//            return false;
+            return null;
         }
 
-        return userService.removeById(userId);
+        return ResultUtills.ok(userService.removeById(userId));
 
 
 
+    }
+
+    @PostMapping("/logout")
+    public BasaResponse logout(HttpServletRequest request) {
+        return ResultUtills.ok(userService.userLogOut(request));
     }
 
 }

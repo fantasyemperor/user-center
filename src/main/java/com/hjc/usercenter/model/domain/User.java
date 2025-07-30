@@ -81,4 +81,9 @@ public class User {
      * 0-用户   1-管理员
      */
     private Integer userRole;
+
+    /**
+     * 星球编号
+     */
+    private String planetCode;
 }

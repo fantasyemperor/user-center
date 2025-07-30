@@ -53,6 +53,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         user1.setUserStatus(user.getUserStatus());
         user1.setCreateTime(user.getCreateTime());
         user1.setUserRole(user.getUserRole());
+        user1.setPlanetCode(user.getPlanetCode());
         return user1;
     }
 
@@ -61,7 +62,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     //注册
     @Override
-    public long userRegister(String userAccount, String userPassword, String checkPassword) {
+    public long userRegister(String userAccount, String userPassword, String checkPassword,String planetCode) {
 
        //1.校验
         if(StringUtils.isAnyBlank(userAccount,userPassword,checkPassword)){
@@ -86,6 +87,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             return -1;
         }
 
+        //星球编号不能重复
+        QueryWrapper<User> queryWrapper2 = new QueryWrapper<>();
+        queryWrapper.eq("planetCode",planetCode);
+        long count2 = userMapper.selectCount(queryWrapper);
+        if(count2>0){
+            return -1;
+        }
+
         //判断是否含有特殊字符
         boolean isValid =  Pattern.compile("^[\u4e00-\u9fa5a-zA-Z0-9]+$").matcher(userAccount).matches();
         if (!isValid){
@@ -99,6 +108,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         User user = new User();
         user.setUserAccount(userAccount);
         user.setUserPassword(encryptPassword);
+        user.setPlanetCode(planetCode);
+        
         //非null判断
         boolean saveResult = this.save(user);
         if(!saveResult){
@@ -188,6 +199,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
         return safeUserList;
 
+    }
+
+    @Override
+    public int userLogOut(HttpServletRequest request) {
+        request.getSession().removeAttribute(USER_LOGIN_STATUS);
+
+        return 1;
     }
 
 
