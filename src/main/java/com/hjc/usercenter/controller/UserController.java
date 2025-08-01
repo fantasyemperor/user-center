@@ -2,7 +2,9 @@ package com.hjc.usercenter.controller;
 
 
 import com.hjc.usercenter.common.BasaResponse;
+import com.hjc.usercenter.common.ErrorCode;
 import com.hjc.usercenter.common.ResultUtills;
+import com.hjc.usercenter.exception.BusinessException;
 import com.hjc.usercenter.model.domain.User;
 import com.hjc.usercenter.model.domain.request.UserLoginRequest;
 import com.hjc.usercenter.model.domain.request.UserRegisterRequest;
@@ -44,10 +46,11 @@ public class UserController {
 
     //注册
     @PostMapping("/register")
-    public BasaResponse userRegister(@RequestBody UserRegisterRequest userRegisterRequest) {
+    public BasaResponse<Long> userRegister(@RequestBody UserRegisterRequest userRegisterRequest) {
 
         if(userRegisterRequest==null){
-            return null;
+//            return ResultUtills.error(ErrorCode.NULL_ERROR)
+          throw  new BusinessException(ErrorCode.PARAMS_ERROR);
         }
 
         String userAccount = userRegisterRequest.getUserAccount();
@@ -55,8 +58,8 @@ public class UserController {
         String checkPassword = userRegisterRequest.getCheckPassword();
         String planetCode = userRegisterRequest.getPlanetCode();
 
-        if(StringUtils.isAnyBlank(userAccount,userPassword,checkPassword)){
-            return null;
+        if(StringUtils.isAnyBlank(userAccount,userPassword,checkPassword,planetCode)){
+            throw  new BusinessException(ErrorCode.PARAMS_ERROR);
         };
 
         return ResultUtills.ok(userService.userRegister(userAccount, userPassword, checkPassword,planetCode));

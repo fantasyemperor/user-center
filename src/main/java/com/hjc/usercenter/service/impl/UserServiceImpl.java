@@ -2,6 +2,8 @@ package com.hjc.usercenter.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.hjc.usercenter.common.ErrorCode;
+import com.hjc.usercenter.exception.BusinessException;
 import com.hjc.usercenter.mapper.UserMapper;
 import com.hjc.usercenter.model.domain.User;
 import com.hjc.usercenter.service.UserService;
@@ -124,7 +126,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
        //1.检验
         if(StringUtils.isAnyBlank(userAccount,userPassword)){
-            return null;
+           throw new BusinessException(ErrorCode.NULL_ERROR);
 
         }
 
