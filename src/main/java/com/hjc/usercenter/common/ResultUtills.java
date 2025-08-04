@@ -8,12 +8,12 @@ public class ResultUtills {
      * @return
      * @param <T>
      */
-    public static <T> BasaResponse<T> ok(T data){
+    public static <T> BaseResponse<T> ok(T data){
 
         int code = 1;
         String message = "ok";
         String description = "";
-        BasaResponse result  = new BasaResponse(1,data,message,description);
+        BaseResponse result  = new BaseResponse(1,data,message,description);
         return result;
 
     }
@@ -25,28 +25,29 @@ public class ResultUtills {
      * @param
      */
 
-    public static BasaResponse error(ErrorCode errorCode){
-        BasaResponse result  = new BasaResponse(errorCode);
+    public static BaseResponse error(ErrorCode errorCode){
+        BaseResponse result  = new BaseResponse(errorCode);
 
 
         return result;
 
     }
 
-    public static BasaResponse error(int errorCode,String message,String description){
-         return new BasaResponse(errorCode,null,message,description);
+    public static BaseResponse error(int errorCode,String message,String description){
+         return new BaseResponse(errorCode,null,message,description);
+//        return 2333;
 
 
     }
 
-    public static BasaResponse error(ErrorCode errorCode,String message,String description){
-        BasaResponse result  = new BasaResponse(errorCode.getCode(),message,description);
+    public static BaseResponse error(ErrorCode errorCode,String message,String description){
+        BaseResponse result  = new BaseResponse(errorCode.getCode(),message,description);
         return result;
 
     }
 
-    public static BasaResponse error(ErrorCode errorCode,String description){
-        BasaResponse result  = new BasaResponse(errorCode.getCode(),description);
+    public static BaseResponse error(ErrorCode errorCode,String description){
+        BaseResponse result  = new BaseResponse(errorCode.getCode(),description);
 
         return result;
 

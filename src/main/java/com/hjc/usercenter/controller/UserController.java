@@ -1,7 +1,7 @@
 package com.hjc.usercenter.controller;
 
 
-import com.hjc.usercenter.common.BasaResponse;
+import com.hjc.usercenter.common.BaseResponse;
 import com.hjc.usercenter.common.ErrorCode;
 import com.hjc.usercenter.common.ResultUtills;
 import com.hjc.usercenter.exception.BusinessException;
@@ -46,7 +46,7 @@ public class UserController {
 
     //注册
     @PostMapping("/register")
-    public BasaResponse<Long> userRegister(@RequestBody UserRegisterRequest userRegisterRequest) {
+    public BaseResponse<Long> userRegister(@RequestBody UserRegisterRequest userRegisterRequest) {
 
         if(userRegisterRequest==null){
 //            return ResultUtills.error(ErrorCode.NULL_ERROR)
@@ -68,7 +68,7 @@ public class UserController {
 
     //登录
     @PostMapping("/userLogin")
-    public BasaResponse userLogin(@RequestBody UserLoginRequest userLoginRequest, HttpServletRequest request) {
+    public BaseResponse userLogin(@RequestBody UserLoginRequest userLoginRequest, HttpServletRequest request) {
 
         if(userLoginRequest==null){
             return null;
@@ -86,7 +86,7 @@ public class UserController {
 
     //查询用户
     @GetMapping("/search")
-    public BasaResponse findUserByName(String username, HttpServletRequest request) {
+    public BaseResponse findUserByName(String username, HttpServletRequest request) {
 
         if(!StringUtils.isNotBlank(username)){
 //            return Collections.emptyList();
@@ -103,7 +103,7 @@ public class UserController {
 
     //删除用户
     @PostMapping("/delete")
-    public BasaResponse isDeleteUser(@RequestBody long userId, HttpServletRequest request) {
+    public BaseResponse isDeleteUser(@RequestBody long userId, HttpServletRequest request) {
         if(userId<=0){
 //            return false;
             return null;
@@ -121,7 +121,7 @@ public class UserController {
     }
 
     @PostMapping("/logout")
-    public BasaResponse logout(HttpServletRequest request) {
+    public BaseResponse logout(HttpServletRequest request) {
         return ResultUtills.ok(userService.userLogOut(request));
     }
 
